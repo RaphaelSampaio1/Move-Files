@@ -1,0 +1,40 @@
+import os
+import shutil
+
+# Define the parent folder path
+parent_folder = r"C:\Users\WIN11\FullFolderPath"
+
+# Iterate through all items in the parent folder
+for item in os.listdir(parent_folder):
+    item_path = os.path.join(parent_folder, item)
+    
+    # Check if it's a directory
+    if os.path.isdir(item_path):
+        # Get all files in the subfolder
+        for file in os.listdir(item_path):
+            file_path = os.path.join(item_path, file)
+            
+            # Check if it's a file (not another folder)
+            if os.path.isfile(file_path):
+                # Define destination path
+                destination = os.path.join(parent_folder, file)
+                
+                # Handle duplicate filenames
+                counter = 1
+                base_name, extension = os.path.splitext(file)
+                while os.path.exists(destination):
+                    destination = os.path.join(parent_folder, f"{base_name}_{counter}{extension}")
+                    counter += 1
+                
+                # Move the file
+                shutil.move(file_path, destination)
+                print(f"Moved: {file} from folder {item}")
+        
+        # Optional: Remove empty folder after moving files
+        try:
+            os.rmdir(item_path)
+            print(f"Removed empty folder: {item}")
+        except:
+            print(f"Folder {item} not empty or couldn't be removed")
+
+print("Done!")
